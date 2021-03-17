@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
-       <a @click="logout">Logout</a>
+      <router-link to="/">Product List</router-link> | <a @click="logout">Logout</a>
     </div>
     <router-view/>
   </div>

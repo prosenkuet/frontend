@@ -25,7 +25,7 @@
                         <td>{{product.price}}</td>
                         <td><img height="60px" width="60px" :src="product.image"/></td>
                         <td>
-                        
+                            <b-button class="btn btn-sm btn-primary mr-2" @click="showEditProduct(product,i)">Edit</b-button>
                         </td>
                     </tr>
                     </tbody>
@@ -51,6 +51,29 @@
                         <input type="file" id="file1" ref="file" v-on:change="onChangeFileUpload"/>
                     </div>
                 </b-modal>
+                <!-- edit modal-->
+                <b-modal
+                        id="editProduct"
+                        v-model="editModal"
+                        title="Update Product"
+                        ok-title="Save"
+                        @ok="updateProduct"
+                >
+                    <div class="mt-1">
+                        <b-form-input v-model="editData.title" placeholder="title" name="title" id="title"></b-form-input>
+                    </div>
+                    <div class="mt-1">
+                        <b-form-textarea v-model="editData.description" placeholder="description" name="description" id="description"></b-form-textarea>
+                    </div>
+                    <div class="mt-1">
+                        <b-form-input v-model="editData.price" type="number" placeholder="price" name="price" id="price"></b-form-input>
+                    </div>
+                    <div class="mt-1">
+                        <img class="mr-2" :src="editData.image" v-model="editData.image" height="60px" width="60px">
+                        <input type="file" id="file" ref="file"  v-on:change="onChangeFileUpload"/>
+                    </div>
+
+                </b-modal>
             </div>
             <div class="content">
 
@@ -71,6 +94,13 @@
                     'description':'',
                     'price':'',
                     'image': ''
+                },
+                editData : {
+                    'id': '',
+                    'title':'',
+                    'description':'',
+                    'price':'',
+                    'image':null
                 },
                 image:'',
                 index:'',
@@ -98,6 +128,7 @@
 
             },
             onChangeFileUpload(e){
+                this.editData.image = this.$refs.file.files[0];
                 this.newProductData.image = this.$refs.file.files[0];
             },
             async addProduct(){
@@ -120,6 +151,44 @@
                     .catch(error => {
                         console.log('error');
                     })
+            },
+            updateProduct(){
+                let token = localStorage.getItem('token');
+                let updateUrl = this.updateProductUrl + this.editData.id;
+                let formdData = new FormData();
+                formdData.append('image',this.editData.image);
+                formdData.append('id',this.editData.id);
+                formdData.append('description',this.editData.description);
+                formdData.append('title',this.editData.title);
+                formdData.append('price',this.editData.price);
+
+                axios.post(updateUrl, formdData, { headers: {"Authorization" : `Bearer ${token}`,  "enctype":"multipart/form-data"} })
+                    .then(response => {
+                        this.posts[this.index].title = response.data['product'].title;
+                        this.posts[this.index].price = response.data['product'].price;
+                        this.posts[this.index].description = response.data['product'].description;
+                        this.posts[this.index].image = response.data['product'].image;
+                        // this.s('Product Added Successfully');
+                        // this.addModal = false;
+                        for(var key in this.newProductData){
+                            this.newProductData[key]='';
+                        }
+                    })
+                    .catch(error => {
+                        console.log('error');
+                    })
+            },
+            showEditProduct(product, index){
+                let Obj = {
+                    id: product.id,
+                    title: product.title,
+                    description: product.description,
+                    price :product.price,
+                    image :product.image,
+                }
+                this.editData = Obj;
+                this.editModal = true;
+                this.index = index;
             },
 
         }
