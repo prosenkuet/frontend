@@ -5,6 +5,7 @@
         </header>
         <main>
             <div class="container">
+                <b-button class="mb-2" @click="addModal = true">Add New Product</b-button>
                 <table class="table">
                     <thead>
                     <tr>
@@ -29,7 +30,27 @@
                     </tr>
                     </tbody>
                 </table>
-                
+                <!-- add modal-->
+                <b-modal
+                        id="addProduct"
+                        v-model="addModal"
+                        title="New Product"
+                        ok-title="Save"
+                        @ok="addProduct"
+                >
+                    <div class="mt-1">
+                        <b-form-input v-model="newProductData.title" placeholder="title" name="title" id="title"></b-form-input>
+                    </div>
+                    <div class="mt-1">
+                        <b-form-textarea v-model="newProductData.description" placeholder="description" name="description" id="description"></b-form-textarea>
+                    </div>
+                    <div class="mt-1">
+                        <b-form-input v-model="newProductData.price" type="number" placeholder="price" name="price" id="price"></b-form-input>
+                    </div>
+                    <div class="mt-1">
+                        <input type="file" id="file1" ref="file" v-on:change="onChangeFileUpload"/>
+                    </div>
+                </b-modal>
             </div>
             <div class="content">
 
@@ -45,7 +66,12 @@
         name: 'app',
         data(){
             return {
-                
+                newProductData:{
+                    'title':'',
+                    'description':'',
+                    'price':'',
+                    'image': ''
+                },
                 image:'',
                 index:'',
                 editModal: false,
@@ -70,6 +96,30 @@
                         console.log('error');
                     })
 
+            },
+            onChangeFileUpload(e){
+                this.newProductData.image = this.$refs.file.files[0];
+            },
+            async addProduct(){
+                let token = localStorage.getItem('token');
+                let formdData = new FormData();
+                formdData.append('image',this.newProductData.image);
+                formdData.append('description',this.newProductData.description);
+                formdData.append('title',this.newProductData.title);
+                formdData.append('price',this.newProductData.price);
+
+                await axios.post(this.endpoint, formdData, { headers: {"Authorization" : `Bearer ${token}`, "enctype":"multipart/form-data"} })
+                    .then(response => {
+                        this.posts.unshift(response.data['product']);
+                        // this.s('Product Added Successfully');
+                        // this.addModal = false;
+                        for(var key in this.newProductData){
+                            this.newProductData[key]='';
+                        }
+                    })
+                    .catch(error => {
+                        console.log('error');
+                    })
             },
 
         }
