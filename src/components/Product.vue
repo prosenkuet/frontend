@@ -26,6 +26,7 @@
                         <td><img height="60px" width="60px" :src="product.image"/></td>
                         <td>
                             <b-button class="btn btn-sm btn-primary mr-2" @click="showEditProduct(product,i)">Edit</b-button>
+                            <b-button class="btn btn-sm btn-danger" @click="deleteProduct(product.id,i)">Delete</b-button>
                         </td>
                     </tr>
                     </tbody>
@@ -178,6 +179,21 @@
                         console.log('error');
                     })
             },
+            
+            deleteProduct(id,index){
+                if(confirm("Do you really want to delete?")){
+                    let token = localStorage.getItem('token');
+                    let updateUrl = this.updateProductUrl + id;
+                    axios.delete(updateUrl, { headers: {"Authorization" : `Bearer ${token}`} })
+                        .then(response => {
+                            this.posts.splice(index,1);
+                        })
+                        .catch(error => {
+                            console.log('error');
+                        })
+                }
+            },
+
             showEditProduct(product, index){
                 let Obj = {
                     id: product.id,
