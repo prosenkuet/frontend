@@ -17,4 +17,5 @@ npm run build
 ## Process
 1. First go to "http://localhost:8080/register"
 2. After register product list is shown in "http://localhost:8080"
+3. After clicking logout then for log in "http://localhost:8080/login"
 
