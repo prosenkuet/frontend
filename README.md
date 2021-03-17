@@ -1,4 +1,4 @@
-# frontend
+# frontend CRUD application
 
 
 ## Build Setup
