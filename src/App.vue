@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Product List</router-link> | <a @click="logout">Logout</a>
+      <span v-if="isLoggedIn"> <a @click="logout">Logout</a> | <router-link to="/">Product List</router-link></span>
     </div>
     <router-view/>
   </div>
