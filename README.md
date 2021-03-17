@@ -1,7 +1,5 @@
 # frontend
-# Vuex Authentication
 
-> A simple example of authentication and access control in a [Vue](https://vuejs.org/) app with [Vuex](https://vuex.vuejs.org/).
 
 ## Build Setup
 
