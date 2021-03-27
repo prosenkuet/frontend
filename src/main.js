@@ -19,6 +19,7 @@ Vue.prototype.$http = Axios;
 
 const token = localStorage.getItem('user-token')
 if (token) {
+  console.log('something');
   Vue.prototype.$http.defaults.headers.common['Authorization'] = token
 }
 
